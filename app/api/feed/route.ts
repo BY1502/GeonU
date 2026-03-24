@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { ok } from "@/lib/errors";
+import { ApiError, ok } from "@/lib/errors";
 import { parseBody, withErrorHandling } from "@/lib/route";
 import { createFeedPost, getFeed } from "@/server/services/feed.service";
 import { createMealPostSchema, feedQuerySchema } from "@/server/validators/feed.validator";
@@ -15,9 +15,13 @@ export async function GET(req: Request) {
       limit: searchParams.get("limit") ?? undefined,
     });
 
+    if (!parsed.success) {
+      throw new ApiError("VALIDATION_ERROR", 400, "쿼리 파라미터가 올바르지 않습니다.", parsed.error.flatten());
+    }
+
     const feed = await getFeed({
-      cursor: parsed.success ? parsed.data.cursor : undefined,
-      limit: parsed.success ? parsed.data.limit : undefined,
+      cursor: parsed.data.cursor,
+      limit: parsed.data.limit,
       viewerId: session?.user?.id,
     });
     return ok(feed);

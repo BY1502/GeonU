@@ -124,7 +124,7 @@ export async function likePost(userId: string, mealPostId: string) {
   try {
     await prisma.like.create({ data: { userId, mealPostId } });
   } catch {
-    throw new ApiError("CONFLICT", 409, "이미 좋아요를 눌렀습니다.", { code: "ALREADY_LIKED" });
+    throw new ApiError("ALREADY_LIKED", 409, "이미 좋아요를 눌렀습니다.");
   }
 
   const likeCount = await prisma.like.count({ where: { mealPostId } });

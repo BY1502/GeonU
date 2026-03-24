@@ -6,6 +6,7 @@ export type ErrorCode =
   | "NOT_FOUND"
   | "CONFLICT"
   | "RATE_LIMITED"
+  | "ALREADY_LIKED"
   | "INTERNAL_ERROR";
 
 export class ApiError extends Error {
